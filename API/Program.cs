@@ -2,10 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using API.Data;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using ReStoreDataAccessLibrary;
 
 namespace API
 {
@@ -13,7 +17,23 @@ namespace API
     {
         public static void Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+            var host = CreateHostBuilder(args).Build();
+            // Make sure to close scope after use.
+            using var scope = host.Services.CreateScope();
+            var context = scope.ServiceProvider.GetRequiredService<StoreDbContext>();
+            var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+            try
+            {
+                // This will create the database if it does not already exist.
+                context.Database.Migrate();
+                DbInitializer.Initialize(context);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, "Problem migrating data");
+            }
+
+            host.Run();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>

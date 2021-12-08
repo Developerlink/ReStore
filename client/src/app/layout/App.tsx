@@ -1,39 +1,49 @@
-import { Container, CssBaseline } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import {
+  Container,
+  createTheme,
+  CssBaseline,
+  ThemeProvider,
+} from "@mui/material";
+import { useState } from "react";
+import { Route, Routes } from "react-router-dom";
+import AboutPage from "../../features/about/AboutPage";
 import Catalog from "../../features/catalog/Catalog";
 import Header from "../../features/catalog/Header";
-import { Product } from "../../models/product";
+import ProductDetails from "../../features/catalog/ProductDetails";
+import ContactPage from "../../features/contact/ContactPage";
+import HomePage from "../../features/home/HomePage";
 
 function App() {
-  const [products, setProducts] = useState<Product[]>([]);
+  const [isDarkMode, setIsDarkMode] = useState(true);
+  const paletteType = isDarkMode ? "dark" : "light";
+  const theme = createTheme({
+    palette: {
+      mode: paletteType,
+      background: {
+        default: paletteType === 'light' ? '#eaeaea' : '#121212'
+      }
+    },
+  });
 
-  useEffect(() => {
-    fetch("http://localhost:5000/api/products")
-      .then((response) => response.json())
-      .then((data) => setProducts(data));
-  }, []);
-
-  const addProduct = () => {
-    setProducts((prevState) => [
-      ...prevState,
-      {
-        id: prevState.length + 101,
-        name: "product" + (prevState.length + 1),
-        description: "some desctiption",
-        price: prevState.length * 100 + 100,
-        pictureUrl: "http://picsum.photos/200",
-        brand: "some brand",
-      },
-    ]);
+  const themeChangeHandler = () => {
+    setIsDarkMode(!isDarkMode);
   };
 
   return (
     <>
-      <CssBaseline />
-      <Header />
-      <Container>
-        <Catalog products={products} addProduct={addProduct} />
-      </Container>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <Header isDarkMode={isDarkMode} handleThemeChange={themeChangeHandler} />
+        <Container>
+          <Routes>
+            <Route path='/' element={<HomePage />} />
+            <Route path='/catalog' element={<Catalog />} />
+            <Route path='/catalog/:id' element={<ProductDetails />} />
+            <Route path='/about' element={<AboutPage />} />
+            <Route path='/contact' element={<ContactPage />} />
+          </Routes>          
+        </Container>
+      </ThemeProvider>
     </>
   );
 }

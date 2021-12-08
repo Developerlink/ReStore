@@ -1,4 +1,4 @@
-import { Grid, List } from "@mui/material";
+import { Grid } from "@mui/material";
 import { Product } from "../../models/product";
 import ProductCard from "./ProductCard";
 
@@ -11,7 +11,7 @@ const ProductList = (props: Props) => {
     <>
       <Grid container spacing={4}>
         {props.products.map((product) => (
-          <Grid item xs={4} key={product.id}>
+          <Grid item xs={3} key={product.id}>
             <ProductCard key={product.id} product={product} />
           </Grid>
         ))}

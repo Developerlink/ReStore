@@ -1,0 +1,15 @@
+
+.navlink {
+    color: inherit;
+    text-decoration: none;
+}
+
+.navlink:focus {
+    text-decoration: underline;
+}
+
+.navlink:active {
+    text-decoration: underline;
+    color: black;    
+}
+

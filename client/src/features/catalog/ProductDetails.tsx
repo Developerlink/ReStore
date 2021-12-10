@@ -1,7 +1,7 @@
 import { Divider, Grid, Table, TableBody, TableCell, TableContainer, TableRow, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Product } from "../../models/product";
+import { Product } from "../../app/models/product";
 import axios from "axios";
 
 export default function ProductDetails() {

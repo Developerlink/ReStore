@@ -9,7 +9,7 @@ import {
   Typography,
 } from "@mui/material";
 import { Link } from "react-router-dom";
-import { Product } from "../../models/product";
+import { Product } from "../../app/models/product";
 import styles from "./ProductCard.module.css";
 
 interface Props {

@@ -22,16 +22,16 @@ namespace API
             using var scope = host.Services.CreateScope();
             var context = scope.ServiceProvider.GetRequiredService<StoreDbContext>();
             var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
-            try
-            {
-                // This will create the database if it does not already exist.
-                context.Database.Migrate();
-                DbInitializer.Initialize(context);
-            }
-            catch (Exception e)
-            {
-                logger.LogError(e, "Problem migrating data");
-            }
+            //try
+            //{
+            //    // This will create the database if it does not already exist.
+            //    context.Database.Migrate();
+            //    DbInitializer.Initialize(context);
+            //}
+            //catch (Exception e)
+            //{
+            //    logger.LogError(e, "Problem migrating data");
+            //}
 
             host.Run();
         }

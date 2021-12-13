@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import agent from "../../app/api/agent";
 import { Product } from "../../app/models/product";
 import ProductList from "./ProductList";
 
@@ -12,11 +13,9 @@ const Catalog = (props: any) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/products")
-      .then((response) => response.json())
-      .then((data) => setProducts(data))
-      .catch((error) => console.log(error))
-      .finally(() => setIsLoading(false));
+    agent.Catalog.list()
+    .then((products) => setProducts(products))
+    .finally(()=> setIsLoading(false));
   }, []);
 
   if (isLoading) {

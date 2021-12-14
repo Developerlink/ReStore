@@ -5,12 +5,13 @@ import App from "./app/layout/App";
 import reportWebVitals from "./reportWebVitals";
 import { HistoryRouter } from "./app/custom/HistoryRouter";
 import { createBrowserHistory } from "history";
+//import { BrowserRouter } from "react-router-dom";
 
 export const history = createBrowserHistory();
 
 ReactDOM.render(
   <React.StrictMode>
-    <HistoryRouter history={history}>
+    <HistoryRouter history={history} >
       <App />
       </HistoryRouter>
   </React.StrictMode>,

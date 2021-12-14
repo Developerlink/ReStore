@@ -48,9 +48,14 @@ const Header = ({ handleThemeChange, isDarkMode }: Props) => {
           alignItems: "center",
         }}
       >
-        <Box display='flex' alignItems='center'>
+        <Box display="flex" alignItems="center">
           <Typography variant="h6" sx={navStyles}>
-            <NavLink className={styles.navlink} to="/">
+            <NavLink
+              className={(thisNavlink) =>
+                thisNavlink.isActive ? styles.active : styles.navlink
+              }
+              to="/"
+            >
               RE-STORE
             </NavLink>
           </Typography>
@@ -67,14 +72,19 @@ const Header = ({ handleThemeChange, isDarkMode }: Props) => {
         <List sx={{ display: "flex" }}>
           {midLinks.map(({ title, to }) => (
             <ListItem key={to} sx={navStyles}>
-              <NavLink className={styles.navlink} to={to}>
+              <NavLink
+                className={(thisNavlink) =>
+                  thisNavlink.isActive ? styles.active : styles.navlink
+                }
+                to={to}
+              >
                 {title.toUpperCase()}
               </NavLink>
             </ListItem>
           ))}
         </List>
 
-        <Box display='flex' alignItems='center'>
+        <Box display="flex" alignItems="center">
           <IconButton size="large" sx={{ color: "inherit" }}>
             <Badge badgeContent={4} color="secondary">
               <ShoppingCart />
@@ -83,7 +93,12 @@ const Header = ({ handleThemeChange, isDarkMode }: Props) => {
           <List sx={{ display: "flex" }}>
             {rightLinks.map(({ title, to }) => (
               <ListItem key={to} sx={navStyles}>
-                <NavLink className={styles.navlink} to={to}>
+                <NavLink
+                  className={(thisNavlink) =>
+                    thisNavlink.isActive ? styles.active : styles.navlink
+                  }
+                  to={to}
+                >
                   {title.toUpperCase()}
                 </NavLink>
               </ListItem>

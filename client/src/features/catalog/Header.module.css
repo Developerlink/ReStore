@@ -4,12 +4,18 @@
     text-decoration: none;
 }
 
-.navlink:focus {
-    text-decoration: underline;
-}
-
 .navlink:active {
     text-decoration: underline;
     color: black;    
 }
 
+.active {
+    color: inherit;
+    text-decoration: underline;    
+}
+
+/* This is no longer used after being able to use the .active class correctly in React */
+/* Still keeping it for future references */
+.navlink:focus {
+    text-decoration: underline;
+}

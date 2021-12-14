@@ -27,8 +27,7 @@ axios.interceptors.response.use(
     } else if (status === 401) {
       toast.error(data.title);
     } else if (status === 500) {
-      history.push('/server-error');
-      toast.error(data.title);
+      history.push("/server-error", { error: data });
     }
 
     return Promise.reject(error.response);

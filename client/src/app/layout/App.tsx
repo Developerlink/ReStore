@@ -14,6 +14,7 @@ import Header from "../../features/catalog/Header";
 import ProductDetails from "../../features/catalog/ProductDetails";
 import ContactPage from "../../features/contact/ContactPage";
 import HomePage from "../../features/home/HomePage";
+import NotFound from "../errors/NotFound";
 import ServerError from "../errors/ServerError";
 
 function App() {
@@ -49,6 +50,7 @@ function App() {
               <Route path="/about" element={<AboutPage />} />
               <Route path="/contact" element={<ContactPage />} />
               <Route path="/server-error" element={<ServerError />} />
+              <Route path="*" element={<NotFound />} />
             </Routes>
           </Container>
       </ThemeProvider>

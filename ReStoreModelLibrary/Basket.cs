@@ -34,7 +34,7 @@ namespace ReStoreModelLibrary
                 return;
 
             item.Quantity -= quantity;
-            if (item.Quantity == 0)
+            if (item.Quantity < 1)
                 Items.Remove(item);               
         }
     }

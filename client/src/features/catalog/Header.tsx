@@ -86,9 +86,11 @@ const Header = ({ handleThemeChange, isDarkMode }: Props) => {
 
         <Box display="flex" alignItems="center">
           <IconButton size="large" sx={{ color: "inherit" }}>
-            <Badge badgeContent={4} color="secondary">
-              <ShoppingCart />
-            </Badge>
+            <NavLink to="/basket">
+              <Badge badgeContent={4} color="secondary">
+                <ShoppingCart />
+              </Badge>
+            </NavLink>
           </IconButton>
           <List sx={{ display: "flex" }}>
             {rightLinks.map(({ title, to }) => (

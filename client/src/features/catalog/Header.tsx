@@ -14,6 +14,7 @@ import LightModeIcon from "@mui/icons-material/LightMode";
 import { NavLink } from "react-router-dom";
 import styles from "./Header.module.css";
 import { ShoppingCart } from "@mui/icons-material";
+import { useStoreContext } from "../../app/context/StoreContext";
 
 interface Props {
   handleThemeChange: () => void;
@@ -39,6 +40,9 @@ const navStyles = {
 };
 
 const Header = ({ handleThemeChange, isDarkMode }: Props) => {
+  const { basket } = useStoreContext();
+  const itemCount = basket?.items.reduce((sum, item) => sum + item.quantity, 0);
+
   return (
     <AppBar position="static" sx={{ mb: 4 }}>
       <Toolbar
@@ -85,10 +89,10 @@ const Header = ({ handleThemeChange, isDarkMode }: Props) => {
         </List>
 
         <Box display="flex" alignItems="center">
-          <IconButton size="large" sx={{ color: "inherit" }}>
+          <IconButton size="large" >
             <NavLink to="/basket">
-              <Badge badgeContent={4} color="secondary">
-                <ShoppingCart />
+              <Badge badgeContent={itemCount} color="secondary">
+                <ShoppingCart sx={ basket ? { fill: '#6F42C1'} : {fill: "white"}}/>
               </Badge>
             </NavLink>
           </IconButton>

@@ -23,7 +23,7 @@ export const useStoreContext = () => {
 export const StoreProvider = ({children}: PropsWithChildren<any>) => {
     const [basket, setBasket] = useState<Basket | null>(null);
 
-    const removeItem = (productId: number, quantity: number){
+    const removeItem = (productId: number, quantity: number) => {
         if (!basket) {
             return;
         }

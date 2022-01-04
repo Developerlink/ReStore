@@ -10,6 +10,7 @@ import { ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import AboutPage from "../../features/about/AboutPage";
 import BasketPage from "../../features/basket/BasketPage";
+import { setBasket } from "../../features/basket/basketSlice";
 import Catalog from "../../features/catalog/Catalog";
 import Header from "../../features/catalog/Header";
 import ProductDetails from "../../features/catalog/ProductDetails";
@@ -17,27 +18,27 @@ import CheckoutPage from "../../features/checkout/CheckoutPage";
 import ContactPage from "../../features/contact/ContactPage";
 import HomePage from "../../features/home/HomePage";
 import agent from "../api/agent";
-import { useStoreContext } from "../context/StoreContext";
 import NotFound from "../errors/NotFound";
 import ServerError from "../errors/ServerError";
+import { useAppDispatch } from "../store/configureStore";
 import { getCookie } from "../util/util";
 import LoadingComponent from "./LoadingComponent";
 
 function App() {
-   const {setBasket} = useStoreContext();
+   const dispatch = useAppDispatch();
    const [isLoading, setIsLoading] = useState(true);
 
    useEffect(() => {
      const buyerId = getCookie('buyerId');
      if (buyerId){
        agent.Basket.get()
-       .then(basket => setBasket(basket))
+       .then(basket => dispatch(setBasket(basket)))
        .catch(error => console.log(error))
        .finally(() => setIsLoading(false));
      } else {
        setIsLoading(false);
      }
-   }, [setBasket])
+   }, [dispatch])
 
   const [isDarkMode, setIsDarkMode] = useState(true);
   const paletteType = isDarkMode ? "dark" : "light";

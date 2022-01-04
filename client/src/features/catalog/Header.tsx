@@ -14,7 +14,7 @@ import LightModeIcon from "@mui/icons-material/LightMode";
 import { NavLink } from "react-router-dom";
 import styles from "./Header.module.css";
 import { ShoppingCart } from "@mui/icons-material";
-import { useStoreContext } from "../../app/context/StoreContext";
+import { useAppSelecter } from "../../app/store/configureStore";
 
 interface Props {
   handleThemeChange: () => void;
@@ -40,7 +40,7 @@ const navStyles = {
 };
 
 const Header = ({ handleThemeChange, isDarkMode }: Props) => {
-  const { basket } = useStoreContext();
+  const { basket } = useAppSelecter(state => state.basket); 
   const itemCount = basket?.items.reduce((sum, item) => sum + item.quantity, 0);
 
   return (

@@ -1,4 +1,4 @@
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, Button, Grid, Typography } from "@mui/material";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -12,6 +12,8 @@ import agent from "../../app/api/agent";
 import { useState } from "react";
 import { LoadingButton } from "@mui/lab";
 import BasketSummary from "./BasketSummary";
+import { Link } from "react-router-dom";
+import styles from "./BasketPage.module.css";
 
 export default function BasketPage() {
   const { basket, setBasket, removeItem } = useStoreContext();
@@ -60,14 +62,16 @@ export default function BasketPage() {
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
               >
                 <TableCell component="th" scope="row">
-                  <Box display="flex" alignItems="center">
-                    <img
-                      src={item.pictureUrl}
-                      alt={item.name}
-                      style={{ height: 50, marginRight: 20 }}
-                    />
-                    <span>{item.name}</span>
-                  </Box>
+                  <Link className={styles.link} to={`/catalog/${item.productId}`}>
+                    <Box display="flex" alignItems="center">
+                      <img
+                        src={item.pictureUrl}
+                        alt={item.name}
+                        style={{ height: 50, marginRight: 20 }}
+                      />
+                      <span>{item.name}</span>
+                    </Box>
+                  </Link>
                 </TableCell>
                 <TableCell align="right">
                   $ {(item.price / 100).toFixed(2)}
@@ -131,6 +135,13 @@ export default function BasketPage() {
         <Grid item xs={6} />
         <Grid item xs={6}>
           <BasketSummary />
+          <Button
+            variant="contained"
+            size="large"
+            fullWidth
+           >
+            <Link className={styles.link} to="/checkout">Checkout</Link>
+          </Button>
         </Grid>
       </Grid>
     </>

@@ -13,6 +13,7 @@ import BasketPage from "../../features/basket/BasketPage";
 import Catalog from "../../features/catalog/Catalog";
 import Header from "../../features/catalog/Header";
 import ProductDetails from "../../features/catalog/ProductDetails";
+import CheckoutPage from "../../features/checkout/CheckoutPage";
 import ContactPage from "../../features/contact/ContactPage";
 import HomePage from "../../features/home/HomePage";
 import agent from "../api/agent";
@@ -75,6 +76,7 @@ function App() {
               <Route path="/contact" element={<ContactPage />} />
               <Route path="/server-error" element={<ServerError />} />
               <Route path="/basket" element={<BasketPage />} />
+              <Route path="/checkout" element={<CheckoutPage />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Container>

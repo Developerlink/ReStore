@@ -20,13 +20,13 @@ import { useStoreContext } from "../../app/context/StoreContext";
 import { LoadingButton } from "@mui/lab";
 
 export default function ProductDetails() {
-  const {basket} = useStoreContext();
+  const { basket, setBasket, removeItem } = useStoreContext();
   const { id } = useParams() as { id: string };
   const [product, setProduct] = useState<Product | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [quantity, setQuantity] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const item = basket?.items.find(i => i.productId === product?.id);
+  const item = basket?.items.find((i) => i.productId === product?.id);
 
   useEffect(() => {
     if (item) {
@@ -38,10 +38,27 @@ export default function ProductDetails() {
       .finally(() => setIsLoading(false));
   }, [id, item]);
 
-  function handleInputChange(event: any){
+  function handleInputChange(event: any) {
     const { value } = event.target;
-    if (value > 0){
+    if (value >= 0) {
       setQuantity(parseInt(event.target.value));
+    }
+  }
+
+  function handleUpdateCart() {
+    setIsSubmitting(true);
+    if (!item || quantity > item.quantity) {
+      const updatedQuantity = item ? quantity - item.quantity : quantity;
+      agent.Basket.addItem(product?.id!, updatedQuantity)
+        .then((basket) => setBasket(basket))
+        .catch((error) => console.log(error))
+        .finally(() => setIsSubmitting(false));
+    } else {
+      const updatedQuantity = item.quantity - quantity;
+      agent.Basket.removeItem(product?.id!, updatedQuantity)
+        .then(() => removeItem(product?.id!, updatedQuantity))
+        .catch((error) => console.log(error))
+        .finally(() => setIsSubmitting(false));
     }
   }
 
@@ -94,25 +111,29 @@ export default function ProductDetails() {
             </TableBody>
           </Table>
         </TableContainer>
-        <Grid container spacing={2} sx={{marginTop: '1px'}}>
+        <Grid container spacing={2} sx={{ marginTop: "1px" }}>
           <Grid item xs={6}>
-            <TextField 
-            onChange={handleInputChange}
-            variant='outlined'
-            type='number'
-            label='Quantity in Cart'
-            fullWidth
-            value={quantity}/>
+            <TextField
+              onChange={handleInputChange}
+              variant="outlined"
+              type="number"
+              label="Quantity in Cart"
+              fullWidth
+              value={quantity}
+            />
           </Grid>
           <Grid item xs={6}>
-            <LoadingButton 
-            sx={{height: '55px'}}
-            color='primary'
-            size='large'
-            variant='contained'
-            fullWidth
+            <LoadingButton
+              disabled={(item?.quantity === quantity) || (!item && quantity === 0)}
+              loading={isSubmitting}
+              onClick={handleUpdateCart}
+              sx={{ height: "55px" }}
+              color="primary"
+              size="large"
+              variant="contained"
+              fullWidth
             >
-              {item ? 'Update Quantity' : 'Add to Cart'}
+              {item ? "Update Quantity" : "Add to Cart"}
             </LoadingButton>
           </Grid>
         </Grid>

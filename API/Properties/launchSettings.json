@@ -17,7 +17,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "Kestrel Dev": {
+    "Kestrel ReStore": {
       "commandName": "Project",
       "launchBrowser": true,
       "launchUrl": "swagger",

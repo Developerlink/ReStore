@@ -1,4 +1,6 @@
-﻿using ReStoreDataAccessLibrary;
+﻿using Microsoft.AspNetCore.Identity;
+using ReStoreDataAccessLibrary;
+using ReStoreDataAccessLibrary.Entities;
 using ReStoreModelLibrary;
 using System;
 using System.Collections.Generic;
@@ -9,8 +11,32 @@ namespace API.Data
 {
     public static class DbInitializer
     {
-        public static void Initialize(StoreDbContext context)
+        public static async Task Initialize(StoreDbContext context, UserManager<User> userManager)
         {
+            if (!userManager.Users.Any())
+            {
+                var member = new User
+                {
+                    UserName = "bob",
+                    Email = "bob@test.com"
+                };
+
+                await userManager.CreateAsync(member, "Pa$$w0rd");
+                await userManager.AddToRoleAsync(member, "Member");
+
+                var admin = new User
+                {
+                    UserName = "admin",
+                    Email = "admin@test.com"
+                };
+
+                await userManager.CreateAsync(admin, "Pa$$w0rd");
+                await userManager.AddToRolesAsync(admin, new[] { "Member", "Admin" });
+
+                // We don't call SaveChangesAsync because the UserManager does this
+                // behind the scenes for us.
+            }
+
             if (context.Products.Any())
                 return;
 

@@ -9,6 +9,9 @@ import { Route, Routes } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import AboutPage from "../../features/about/AboutPage";
+import { fetchCurrentUser } from "../../features/account/accountSlice";
+import Login from "../../features/account/Login";
+import Register from "../../features/account/Register";
 import BasketPage from "../../features/basket/BasketPage";
 import { setBasket } from "../../features/basket/basketSlice";
 import Catalog from "../../features/catalog/Catalog";
@@ -30,6 +33,7 @@ function App() {
 
    useEffect(() => {
      const buyerId = getCookie('buyerId');
+     dispatch(fetchCurrentUser());
      if (buyerId){
        agent.Basket.get()
        .then(basket => dispatch(setBasket(basket)))
@@ -78,6 +82,8 @@ function App() {
               <Route path="/server-error" element={<ServerError />} />
               <Route path="/basket" element={<BasketPage />} />
               <Route path="/checkout" element={<CheckoutPage />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Container>

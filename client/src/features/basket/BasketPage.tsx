@@ -9,7 +9,7 @@ import Paper from "@mui/material/Paper";
 import { Add, Delete, Remove } from "@mui/icons-material";
 import { LoadingButton } from "@mui/lab";
 import BasketSummary from "./BasketSummary";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import styles from "./BasketPage.module.css";
 import { useAppDispatch, useAppSelecter } from "../../app/store/configureStore";
 import { addBasketItemAsync, removeBasketItemAsync } from "./basketSlice";
@@ -17,6 +17,7 @@ import { addBasketItemAsync, removeBasketItemAsync } from "./basketSlice";
 export default function BasketPage() {
   const { basket, status } = useAppSelecter((state) => state.basket);
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   if (!basket) {
     return <Typography variant="h3">Your basket is empty</Typography>;
@@ -115,10 +116,8 @@ export default function BasketPage() {
         <Grid item xs={6} />
         <Grid item xs={6}>
           <BasketSummary />
-          <Button variant="contained" size="large" fullWidth>
-            <Link className={styles.link} to="/checkout">
+          <Button onClick={() => navigate("/checkout")} variant="contained" size="large" fullWidth>
               Checkout
-            </Link>
           </Button>
         </Grid>
       </Grid>

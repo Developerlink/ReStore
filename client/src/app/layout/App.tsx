@@ -24,19 +24,20 @@ import NotFound from "../errors/NotFound";
 import ServerError from "../errors/ServerError";
 import { useAppDispatch } from "../store/configureStore";
 import LoadingComponent from "./LoadingComponent";
+import RequireAuth from "./RequireAuth";
 
 function App() {
   const dispatch = useAppDispatch();
   const [isLoading, setIsLoading] = useState(true);
 
-  const initApp = useCallback( async () => {
+  const initApp = useCallback(async () => {
     try {
       await dispatch(fetchCurrentUser());
       await dispatch(fetchBasketAsync());
     } catch (error) {
       console.log(error);
     }
-  }, [dispatch])
+  }, [dispatch]);
 
   useEffect(() => {
     initApp().then(() => setIsLoading(false));
@@ -73,15 +74,17 @@ function App() {
         <Container>
           <Routes>
             <Route path="/" element={<HomePage />} />
-            <Route path="/catalog" element={<Catalog />} />
-            <Route path="/catalog/:id" element={<ProductDetails />} />
-            <Route path="/about" element={<AboutPage />} />
-            <Route path="/contact" element={<ContactPage />} />
-            <Route path="/server-error" element={<ServerError />} />
-            <Route path="/basket" element={<BasketPage />} />
-            <Route path="/checkout" element={<CheckoutPage />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+              <Route path="/catalog" element={<Catalog />} />
+              <Route path="/catalog/:id" element={<ProductDetails />} />
+              <Route path="/about" element={<AboutPage />} />
+              <Route path="/contact" element={<ContactPage />} />
+              <Route path="/server-error" element={<ServerError />} />
+              <Route path="/basket" element={<BasketPage />} />
+            <Route element={<RequireAuth />}>
+              <Route path="/checkout" element={<CheckoutPage />} />
+            </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Container>

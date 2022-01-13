@@ -76,7 +76,7 @@ namespace API
                 //options.Password.RequireNonAlphanumeric = false
                 options.User.RequireUniqueEmail = true;
             })
-                .AddRoles<IdentityRole>()
+                .AddRoles<Role>()
                 .AddEntityFrameworkStores<StoreDbContext>(); //Adds all necessary tables to database for identity to work
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>

@@ -25,16 +25,16 @@ namespace API
             var context = scope.ServiceProvider.GetRequiredService<StoreDbContext>();
             var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
             var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
-            try
-            {
-                // This will create the database if it does not already exist.
-                await context.Database.MigrateAsync();
-                await DbInitializer.Initialize(context, userManager);
-            }
-            catch (Exception e)
-            {
-                logger.LogError(e, "Problem migrating data");
-            }
+            //try
+            //{
+            //    // This will create the database if it does not already exist.
+            //    await context.Database.MigrateAsync();
+            //    await DbInitializer.Initialize(context, userManager);
+            //}
+            //catch (Exception e)
+            //{
+            //    logger.LogError(e, "Problem migrating data");
+            //}
 
             await host.RunAsync();
         }

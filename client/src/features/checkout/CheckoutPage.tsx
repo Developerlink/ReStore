@@ -19,7 +19,10 @@ import { validationSchema } from "./chekoutValidation";
 const steps = ["Shipping address", "Review your order", "Payment details"];
 
 export default function CheckoutPage() {
-  const methods = useForm({});
+  const methods = useForm({
+    mode: "all",
+    resolver: yupResolver(validationSchema)
+  });
   const [activeStep, setActiveStep] = useState(0);
 
   function getStepContent(step: number) {
@@ -85,6 +88,7 @@ export default function CheckoutPage() {
                   </Button>
                 )}
                 <LoadingButton
+                disabled={!methods.formState.isValid}
                   variant="contained"
                   type="submit"
                   sx={{ mt: 3, ml: 1 }}

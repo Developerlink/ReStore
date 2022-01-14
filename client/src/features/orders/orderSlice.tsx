@@ -46,10 +46,11 @@ export const createOrderAsync = createAsyncThunk<
   "orders/createOrderAsync",
   async ({ saveAddress, shippingAddress }, thunkAPI) => {
     try {
-      return await agent.Orders.create({
+      const result = await agent.Orders.create({
         saveAddress,
         shippingAddress,
       });
+      return parseInt(result);
     } catch (error: any) {
       return thunkAPI.rejectWithValue({ error: error.data });
     }

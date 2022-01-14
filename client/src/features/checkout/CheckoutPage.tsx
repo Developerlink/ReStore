@@ -62,8 +62,26 @@ export default function CheckoutPage() {
   }, [methods]);
 
   const handleNext = async (data: FieldValues) => {
-    const { nameOnCard, saveAddress } = data;
-    const { shippingAddress } = data;
+    const {
+      nameOnCard,
+      saveAddress,
+      address1,
+      address2,
+      city,
+      country,
+      fullName,
+      state,
+      zip,
+    } = data;
+    const shippingAddress = {
+      address1,
+      address2,
+      city,
+      country,
+      fullName,
+      state,
+      zip,
+    };
 
     if (activeStep === steps.length - 1) {
       setIsLoading(true);
@@ -72,10 +90,11 @@ export default function CheckoutPage() {
         //   saveAddress,
         //   shippingAddress,
         // });
-        const orderNumber = await dispatch(createOrderAsync({saveAddress,
-          shippingAddress}));
+        const orderNumber = await dispatch(
+          createOrderAsync({ saveAddress, shippingAddress })
+        );
 
-        setOrderNumber(orderNumber);
+        setOrderNumber(+orderNumber);
         setActiveStep(activeStep + 1);
         dispatch(clearBasket());
         setIsLoading(false);

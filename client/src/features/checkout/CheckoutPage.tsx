@@ -7,7 +7,7 @@ import {
   Stepper,
   Typography,
 } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FieldValues, FormProvider, useForm } from "react-hook-form";
 import AddressForm from "./AddressForm";
 import PaymentForm from "./PaymentForm";
@@ -15,34 +15,77 @@ import Review from "./Review";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { LoadingButton } from "@mui/lab";
 import { validationSchema } from "./chekoutValidation";
+import agent from "../../app/api/agent";
+import { useAppDispatch } from "../../app/store/configureStore";
+import { clearBasket } from "../basket/basketSlice";
+import { createOrderAsync } from "../orders/orderSlice";
+import { ConstructionOutlined } from "@mui/icons-material";
 
 const steps = ["Shipping address", "Review your order", "Payment details"];
 
+function getStepContent(step: number) {
+  switch (step) {
+    case 0:
+      return <AddressForm />;
+    case 1:
+      return <Review />;
+    case 2:
+      return <PaymentForm />;
+    default:
+      throw new Error("Unknown step");
+  }
+}
+
 export default function CheckoutPage() {
+  const [activeStep, setActiveStep] = useState(0);
+  const [orderNumber, setOrderNumber] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
+  const dispatch = useAppDispatch();
+
+  const currentValidationSchema = validationSchema[activeStep];
+
   const methods = useForm({
     mode: "all",
-    resolver: yupResolver(validationSchema)
+    resolver: yupResolver(currentValidationSchema),
   });
-  const [activeStep, setActiveStep] = useState(0);
 
-  function getStepContent(step: number) {
-    switch (step) {
-      case 0:
-        return <AddressForm />;
-      case 1:
-        return <Review />;
-      case 2:
-        return <PaymentForm />;
-      default:
-        throw new Error("Unknown step");
-    }
-  }
+  useEffect(() => {
+    agent.Account.fetchAddress().then((response) => {
+      if (response) {
+        methods.reset({
+          ...methods.getValues(),
+          ...response,
+          saveAddress: false,
+        });
+      }
+    });
+  }, [methods]);
 
   const handleNext = async (data: FieldValues) => {
-    if (activeStep === 0){
-      console.log(data);
+    const { nameOnCard, saveAddress } = data;
+    const { shippingAddress } = data;
+
+    if (activeStep === steps.length - 1) {
+      setIsLoading(true);
+      try {
+        // const orderNumber = await agent.Orders.create({
+        //   saveAddress,
+        //   shippingAddress,
+        // });
+        const orderNumber = await dispatch(createOrderAsync({saveAddress,
+          shippingAddress}));
+
+        setOrderNumber(orderNumber);
+        setActiveStep(activeStep + 1);
+        dispatch(clearBasket());
+        setIsLoading(false);
+      } catch (error) {
+        console.log(error);
+        setIsLoading(false);
+      }
+    } else {
+      setActiveStep(activeStep + 1);
     }
-    setActiveStep(activeStep + 1);
   };
 
   const handleBack = () => {
@@ -73,9 +116,9 @@ export default function CheckoutPage() {
               </Typography>
 
               <Typography variant="subtitle1">
-                Your order number is #5. We have not emailed your order
-                confirmation, and will not send you an update when your order
-                has shipped as this is a fake store!
+                Your order number is #{orderNumber}. We have not emailed your
+                order confirmation, and will not send you an update when your
+                order has shipped as this is a fake store!
               </Typography>
             </>
           ) : (
@@ -88,7 +131,8 @@ export default function CheckoutPage() {
                   </Button>
                 )}
                 <LoadingButton
-                disabled={!methods.formState.isValid}
+                  loading={isLoading}
+                  disabled={!methods.formState.isValid}
                   variant="contained"
                   type="submit"
                   sx={{ mt: 3, ml: 1 }}

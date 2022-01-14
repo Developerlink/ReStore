@@ -20,6 +20,7 @@ import ProductDetails from "../../features/catalog/ProductDetails";
 import CheckoutPage from "../../features/checkout/CheckoutPage";
 import ContactPage from "../../features/contact/ContactPage";
 import HomePage from "../../features/home/HomePage";
+import OrdersPage from "../../features/orders/OrdersPage";
 import NotFound from "../errors/NotFound";
 import ServerError from "../errors/ServerError";
 import { useAppDispatch } from "../store/configureStore";
@@ -54,6 +55,7 @@ function App() {
     },
   });
 
+  
   const themeChangeHandler = () => {
     setIsDarkMode(!isDarkMode);
   };
@@ -84,6 +86,7 @@ function App() {
               <Route path="/basket" element={<BasketPage />} />
             <Route element={<RequireAuth />}>
               <Route path="/checkout" element={<CheckoutPage />} />
+              <Route path="/orders" element={<OrdersPage />} /> 
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>

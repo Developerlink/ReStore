@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using ReStoreDataAccessLibrary;
 using ReStoreDataAccessLibrary.Entities;
 using ReStoreModelLibrary;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace API.Controllers
@@ -37,7 +38,7 @@ namespace API.Controllers
 
             if (anonBasket != null)
             {
-                if (userBasket != null) 
+                if (userBasket != null)
                     _context.Baskets.Remove(userBasket);
                 anonBasket.BuyerId = user.UserName;
                 Response.Cookies.Delete("buyerId");
@@ -99,6 +100,17 @@ namespace API.Controllers
                 Basket = userBasket?.MapBasketToDto()
             };
         }
+
+        [Authorize]
+        [HttpGet("savedAddress")]
+        public async Task<ActionResult<UserAddress>> GetSavedAddress()
+        {
+            return await _userManager.Users
+                .Where(x => x.UserName == User.Identity.Name)
+                .Select(x => x.Address)
+                .FirstOrDefaultAsync();
+        }           
+            
 
         private async Task<Basket> RetrieveBasket(string buyerId)
         {

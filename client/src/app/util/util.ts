@@ -4,7 +4,7 @@ export const getCookie = (key: string) => {
 };
 
 export function currencyFormat(amount: number){
-  return 'Kr ' + (amount/100).toFixed(2);
+  return '$' + (amount/100).toFixed(2);
 }
 
 

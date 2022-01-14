@@ -6,6 +6,7 @@ import { useState } from "react";
 import { useAppDispatch, useAppSelecter } from "../store/configureStore";
 import { signOut } from "../../features/account/accountSlice";
 import { clearBasket } from "../../features/basket/basketSlice";
+import { useNavigate } from "react-router-dom";
 
 export default function SignedInMenu() {
   const dispatch = useAppDispatch();
@@ -18,6 +19,7 @@ export default function SignedInMenu() {
   const handleClose = () => {
     setAnchorEl(null);
   };
+  const navigate = useNavigate();
 
   return (
     <>
@@ -31,7 +33,7 @@ export default function SignedInMenu() {
         TransitionComponent={Fade}
       >
         <MenuItem onClick={handleClose}>Profile</MenuItem>
-        <MenuItem onClick={handleClose}>My orders</MenuItem>
+        <MenuItem onClick={() => navigate("/orders")}>My orders</MenuItem>
         <MenuItem
           onClick={() => {
             dispatch(signOut());

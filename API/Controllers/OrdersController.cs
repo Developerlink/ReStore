@@ -73,7 +73,7 @@ namespace API.Controllers
             }
 
             var subtotal = items.Sum(x => x.Price * x.Quantity);
-            var deliveryFee = subtotal > 10000 ? 0 : 5000;
+            var deliveryFee = subtotal > 10000 ? 0 : 500;
 
             var order = new Order
             {
@@ -89,8 +89,11 @@ namespace API.Controllers
 
             if (orderDto.SaveAddress)
             {
-                var user = await _context.Users.FirstOrDefaultAsync(x => x.UserName == User.Identity.Name);
-                user.Address = new UserAddress
+                var user = await _context.Users
+                    .Include(x => x.Address)
+                    .FirstOrDefaultAsync(x => x.UserName == User.Identity.Name);
+                
+                var address = new UserAddress
                 {
                     FullName = orderDto.ShippingAddress.FullName,
                     Address1 = orderDto.ShippingAddress.Address1,
@@ -101,7 +104,10 @@ namespace API.Controllers
                     Country = orderDto.ShippingAddress.Country,
                 };
 
-                _context.Update(user);
+                user.Address = address;
+                // Entity is being tracked so it already knows that the address
+                // has been changed. No need to explicitly update the user.
+                //_context.Update(user);
             }
 
             var result = await _context.SaveChangesAsync() > 0;

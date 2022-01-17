@@ -35,7 +35,7 @@ export default function OrdersPage() {
     try {
       dispatch(fetchOrdersAsync());
     } catch (error) {
-      console.log(error);
+      console.log(error); 
     }
   }, [dispatch]);
 

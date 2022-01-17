@@ -17,7 +17,7 @@ import { fetchBasketAsync } from "../../features/basket/basketSlice";
 import Catalog from "../../features/catalog/Catalog";
 import Header from "../../features/catalog/Header";
 import ProductDetails from "../../features/catalog/ProductDetails";
-import CheckoutPage from "../../features/checkout/CheckoutPage";
+import CheckoutWrapper from "../../features/checkout/CheckoutWrapper";
 import ContactPage from "../../features/contact/ContactPage";
 import HomePage from "../../features/home/HomePage";
 import OrdersPage from "../../features/orders/OrdersPage";
@@ -85,7 +85,7 @@ function App() {
               <Route path="/server-error" element={<ServerError />} />
               <Route path="/basket" element={<BasketPage />} />
             <Route element={<RequireAuth />}>
-              <Route path="/checkout" element={<CheckoutPage />} />
+              <Route path="/checkout" element={<CheckoutWrapper />} />
               <Route path="/orders" element={<OrdersPage />} /> 
             </Route>
             <Route path="*" element={<NotFound />} />

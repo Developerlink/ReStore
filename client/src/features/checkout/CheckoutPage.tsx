@@ -19,7 +19,6 @@ import agent from "../../app/api/agent";
 import { useAppDispatch } from "../../app/store/configureStore";
 import { clearBasket } from "../basket/basketSlice";
 import { createOrderAsync } from "../orders/orderSlice";
-import { ConstructionOutlined } from "@mui/icons-material";
 
 const steps = ["Shipping address", "Review your order", "Payment details"];
 
@@ -38,7 +37,7 @@ function getStepContent(step: number) {
 
 export default function CheckoutPage() {
   const [activeStep, setActiveStep] = useState(0);
-  const [orderNumber, setOrderNumber] = useState(0);
+  const [orderNumber, setOrderNumber] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useAppDispatch();
 
@@ -63,7 +62,7 @@ export default function CheckoutPage() {
 
   const handleNext = async (data: FieldValues) => {
     const {
-      nameOnCard,
+      //nameOnCard,
       saveAddress,
       address1,
       address2,
@@ -90,11 +89,11 @@ export default function CheckoutPage() {
         //   saveAddress,
         //   shippingAddress,
         // });
-        const orderNumber = await dispatch(
+        const response = await dispatch(
           createOrderAsync({ saveAddress, shippingAddress })
         );
 
-        setOrderNumber(+orderNumber);
+        setOrderNumber(response.payload);
         setActiveStep(activeStep + 1);
         dispatch(clearBasket());
         setIsLoading(false);

@@ -8,18 +8,27 @@ import {
   TableBody,
   Button,
   Grid,
+  Box,
+  Typography,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import LoadingComponent from "../../app/layout/LoadingComponent";
 import { BasketItem } from "../../app/models/basket";
 import { useAppDispatch, useAppSelecter } from "../../app/store/configureStore";
 import { currencyFormat } from "../../app/util/util";
+import BasketSummary from "../basket/BasketSummary";
 import BasketTable from "../basket/BasketTable";
-import { fetchOrdersAsync, removeSelectedOrder, setSelectedOrder } from "./orderSlice";
+import {
+  fetchOrdersAsync,
+  removeSelectedOrder,
+  setSelectedOrder,
+} from "./orderSlice";
 
 export default function OrdersPage() {
   const [isViewingDetails, setIsViewingDetails] = useState(false);
-  const { orders, ordersLoaded, selectedOrder } = useAppSelecter((state) => state.orders);
+  const { orders, ordersLoaded, selectedOrder } = useAppSelecter(
+    (state) => state.orders
+  );
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -35,52 +44,29 @@ export default function OrdersPage() {
   if (isViewingDetails) {
     return (
       <>
-        <Grid container>
-          <Grid item xs={10} />
-          <Grid item xs={2}>
-            <Button
-              onClick={() => {
-                dispatch(removeSelectedOrder());
-                setIsViewingDetails(false);
-              }}
-              variant="contained"
-              size="large"
-              fullWidth
-            >
-              Go Back
-            </Button>
-          </Grid>
+        <Box display="flex" justifyContent="space-between">
+          <Typography sx={{ p:2 }} gutterBottom variant="h5">Order # {selectedOrder!.id}</Typography>
+          <Button
+            onClick={() => {
+              dispatch(removeSelectedOrder());
+              setIsViewingDetails(false);
+            }}
+            sx={{ m: 2 }}
+            variant="contained"
+            size="large"
+          >
+            Back to orders
+          </Button>
+        </Box>
 
-          <BasketTable
-            items={selectedOrder!.orderItems as BasketItem[]}
-            isBasket={false}
-          />
+        <BasketTable
+          items={selectedOrder!.orderItems as BasketItem[]}
+          isBasket={false}
+        />
+        <Grid container>
           <Grid item xs={6} />
           <Grid item xs={6}>
-            <TableContainer component={Paper} variant={"outlined"}>
-              <Table>
-                <TableBody>
-                  <TableRow>
-                    <TableCell colSpan={2}>Subtotal</TableCell>
-                    <TableCell align="right">
-                      {currencyFormat(selectedOrder!.subtotal)}
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell colSpan={2}>Delivery fee*</TableCell>
-                    <TableCell align="right">
-                      {currencyFormat(selectedOrder!.deliveryFee)}
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell colSpan={2}>Total</TableCell>
-                    <TableCell align="right">
-                      {currencyFormat(selectedOrder!.total)}
-                    </TableCell>
-                  </TableRow>
-                </TableBody>
-              </Table>
-            </TableContainer>
+            <BasketSummary subtotal={selectedOrder!.subtotal} />
           </Grid>
         </Grid>
       </>

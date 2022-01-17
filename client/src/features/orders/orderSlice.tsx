@@ -40,7 +40,7 @@ export const fetchOrderAsync = createAsyncThunk<Order, number>(
 );
 
 export const createOrderAsync = createAsyncThunk<
-  Order,
+  number,
   { saveAddress: boolean; shippingAddress: ShippingAddress }
 >(
   "orders/createOrderAsync",
@@ -50,7 +50,7 @@ export const createOrderAsync = createAsyncThunk<
         saveAddress,
         shippingAddress,
       });
-      return parseInt(result);
+      return result;
     } catch (error: any) {
       return thunkAPI.rejectWithValue({ error: error.data });
     }

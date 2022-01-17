@@ -27,3 +27,13 @@ export interface Order {
     orderStatus: string;
     total: number;
 }
+
+
+export interface OrderResObj{
+    arg: {
+        saveAddress: boolean;
+        shippingAddress: ShippingAddress;
+    };
+    requestId: string;
+    requestStatus: string;
+}

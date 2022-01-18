@@ -16,30 +16,65 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { LoadingButton } from "@mui/lab";
 import { validationSchema } from "./chekoutValidation";
 import agent from "../../app/api/agent";
-import { useAppDispatch } from "../../app/store/configureStore";
+import { useAppDispatch, useAppSelecter } from "../../app/store/configureStore";
 import { clearBasket } from "../basket/basketSlice";
 import { createOrderAsync } from "../orders/orderSlice";
+import { StripeElementType } from "@stripe/stripe-js";
+import {
+  CardNumberElement,
+  useElements,
+  useStripe,
+} from "@stripe/react-stripe-js";
 
 const steps = ["Shipping address", "Review your order", "Payment details"];
 
-function getStepContent(step: number) {
-  switch (step) {
-    case 0:
-      return <AddressForm />;
-    case 1:
-      return <Review />;
-    case 2:
-      return <PaymentForm />;
-    default:
-      throw new Error("Unknown step");
-  }
-}
-
 export default function CheckoutPage() {
   const [activeStep, setActiveStep] = useState(0);
-  const [orderNumber, setOrderNumber] = useState<any>(null);
+  const [orderNumber, setOrderNumber] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useAppDispatch();
+  const [cardState, setCardState] = useState<{
+    elementError: { [key in StripeElementType]?: string };
+  }>({ elementError: {} });
+  const [cardComplete, setCardComplete] = useState<any>({
+    cardNumber: false,
+    cardExpiry: false,
+    cardCvc: false,
+  });
+  const [paymentMessage, setPaymentMessage] = useState("");
+  const [paymentSucceeded, setPaymentSucceeded] = useState(false);
+  const { basket } = useAppSelecter((state) => state.basket);
+  const stripe = useStripe();
+  const elements = useElements();
+
+  function onCardInputChange(event: any) {
+    setCardState({
+      ...cardState,
+      elementError: {
+        ...cardState.elementError,
+        [event.elementType]: event.error?.message,
+      },
+    });
+    setCardComplete({ ...cardComplete, [event.elementType]: event.complete });
+  }
+
+  function getStepContent(step: number) {
+    switch (step) {
+      case 0:
+        return <AddressForm />;
+      case 1:
+        return <Review />;
+      case 2:
+        return (
+          <PaymentForm
+            cardState={cardState}
+            onCardInputChange={onCardInputChange}
+          />
+        );
+      default:
+        throw new Error("Unknown step");
+    }
+  }
 
   const currentValidationSchema = validationSchema[activeStep];
 
@@ -60,47 +95,51 @@ export default function CheckoutPage() {
     });
   }, [methods]);
 
-  const handleNext = async (data: FieldValues) => {
-    const {
-      //nameOnCard,
-      saveAddress,
-      address1,
-      address2,
-      city,
-      country,
-      fullName,
-      state,
-      zip,
-    } = data;
-    const shippingAddress = {
-      address1,
-      address2,
-      city,
-      country,
-      fullName,
-      state,
-      zip,
-    };
-
-    if (activeStep === steps.length - 1) {
-      setIsLoading(true);
-      try {
-        // const orderNumber = await agent.Orders.create({
-        //   saveAddress,
-        //   shippingAddress,
-        // });
-        const response = await dispatch(
-          createOrderAsync({ saveAddress, shippingAddress })
-        );
-
-        setOrderNumber(response.payload);
+  async function submitOrder(data: FieldValues) {
+    setIsLoading(true);
+    const { nameOnCard, saveAddress, ...shippingAddress } = data;
+    if (!stripe || !elements) return; // Stripe is not ready.
+    try {
+      const cardElement = elements.getElement(CardNumberElement);
+      const paymentResult = await stripe.confirmCardPayment(
+        basket?.clientSecret!,
+        {
+          payment_method: {
+            card: cardElement!,
+            billing_details: {
+              name: nameOnCard,
+            },
+          },
+        }
+      );
+      console.log(paymentResult);
+      if (paymentResult.paymentIntent?.status === "succeeded") {
+        const orderNumber = await agent.Orders.create({
+          saveAddress,
+          shippingAddress,
+        });
+        setOrderNumber(orderNumber);
+        setPaymentSucceeded(true);
+        setPaymentMessage("Thank you - we have received your payment");
         setActiveStep(activeStep + 1);
         dispatch(clearBasket());
         setIsLoading(false);
-      } catch (error) {
-        console.log(error);
+      } else {
+        setPaymentSucceeded(false);
+        setPaymentMessage(paymentResult.error?.message!);
+        setActiveStep(activeStep + 1);
         setIsLoading(false);
       }
+    } catch (error) {
+      console.log(error);
+      setIsLoading(false);
+    }
+  }
+
+  const handleNext = async (data: FieldValues) => {
+    if (activeStep === steps.length - 1) {
+      setIsLoading(true);
+      await submitOrder(data);
     } else {
       setActiveStep(activeStep + 1);
     }
@@ -109,6 +148,19 @@ export default function CheckoutPage() {
   const handleBack = () => {
     setActiveStep(activeStep - 1);
   };
+
+  function submitDisabled(): boolean {
+    if (activeStep === steps.length - 1) {
+      return (
+        !cardComplete.cardCvc ||
+        !cardComplete.cardExpiry ||
+        !cardComplete.cardCvc ||
+        !methods.formState.isValid
+      );
+    } else {
+      return !methods.formState.isValid;
+    }
+  }
 
   return (
     <FormProvider {...methods}>
@@ -150,7 +202,7 @@ export default function CheckoutPage() {
                 )}
                 <LoadingButton
                   loading={isLoading}
-                  disabled={!methods.formState.isValid}
+                  disabled={submitDisabled()}
                   variant="contained"
                   type="submit"
                   sx={{ mt: 3, ml: 1 }}

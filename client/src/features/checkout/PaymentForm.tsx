@@ -11,30 +11,17 @@ import {
   CardNumberElement,
 } from "@stripe/react-stripe-js";
 import { StripeElementType } from "@stripe/stripe-js";
-import { useState } from "react";
 import { Paper } from "@mui/material";
 
-export default function PaymentForm() {
-  const { control } = useFormContext();
-  const [cardState, setCardState] = React.useState<{
+interface Props {
+  cardState: {
     elementError: { [key in StripeElementType]?: string };
-  }>({ elementError: {} });
-  const [cardComplete, setCardComplete] = useState<any>({
-    cardNumber: false,
-    cardExpiry: false,
-    cardCvc: false,
-  });
+  };
+  onCardInputChange: (event: any) => void;
+}
 
-  function onCardInputChanged(event: any) {
-    setCardState({
-      ...cardState,
-      elementError: {
-        ...cardState.elementError,
-        [event.elementType]: event.error?.message,
-      },
-    });
-    setCardComplete({ ...cardComplete, [event.elementType]: event.complete });
-  }
+export default function PaymentForm({cardState, onCardInputChange}: Props) {
+  const { control } = useFormContext();
 
   return (
     <React.Fragment>
@@ -52,7 +39,7 @@ export default function PaymentForm() {
         <Grid item xs={12} md={6}>
           <Paper>
             <TextField
-              onChange={onCardInputChanged}
+              onChange={onCardInputChange}
               error={!!cardState.elementError.cardNumber}
               helperText={cardState.elementError.cardNumber}
               id="cardNumber"
@@ -72,7 +59,7 @@ export default function PaymentForm() {
         </Grid>
         <Grid item xs={12} md={6}>
           <TextField
-            onChange={onCardInputChanged}
+            onChange={onCardInputChange}
             error={!!cardState.elementError.cardExpiry}
             helperText={cardState.elementError.cardExpiry}
             id="expDate"
@@ -91,7 +78,7 @@ export default function PaymentForm() {
         </Grid>
         <Grid item xs={12} md={6}>
           <TextField
-            onChange={onCardInputChanged}
+            onChange={onCardInputChange}
             error={!!cardState.elementError.cardCvc}
             helperText={cardState.elementError.cardCvc}
             id="cvv"

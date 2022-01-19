@@ -18,7 +18,6 @@ import { validationSchema } from "./chekoutValidation";
 import agent from "../../app/api/agent";
 import { useAppDispatch, useAppSelecter } from "../../app/store/configureStore";
 import { clearBasket } from "../basket/basketSlice";
-import { createOrderAsync } from "../orders/orderSlice";
 import { StripeElementType } from "@stripe/stripe-js";
 import {
   CardNumberElement,
@@ -182,14 +181,19 @@ export default function CheckoutPage() {
           {activeStep === steps.length ? (
             <>
               <Typography variant="h5" gutterBottom>
-                Thank you
+                {paymentMessage}
               </Typography>
-
-              <Typography variant="subtitle1">
-                Your order number is #{orderNumber}. We have not emailed your
-                order confirmation, and will not send you an update when your
-                order has shipped as this is a fake store!
-              </Typography>
+              {paymentSucceeded ? (
+                <Typography variant="subtitle1">
+                  Your order number is #{orderNumber}. We have not emailed your
+                  order confirmation, and will not send you an update when your
+                  order has shipped as this is a fake store!
+                </Typography>
+              ) : (
+                <Button variant="contained" onClick={handleBack}>
+                  Go back and try again
+                </Button>
+              )}
             </>
           ) : (
             <form onSubmit={methods.handleSubmit(handleNext)}>

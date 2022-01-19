@@ -178,6 +178,9 @@ export default function CheckoutPage() {
           ))}
         </Stepper>
         <>
+        {/* Active step is always steps.length - 1 unless submitOrder has activated
+            if active step is === steps.length then show somehting other than next
+            or place order button */}
           {activeStep === steps.length ? (
             <>
               <Typography variant="h5" gutterBottom>

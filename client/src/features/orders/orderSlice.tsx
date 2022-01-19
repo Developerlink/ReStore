@@ -39,8 +39,7 @@ export const fetchOrderAsync = createAsyncThunk<Order, number>(
   }
 );
 
-export const createOrderAsync = createAsyncThunk<
-  number,
+export const createOrderAsync = createAsyncThunk<number,
   { saveAddress: boolean; shippingAddress: ShippingAddress }
 >(
   "orders/createOrderAsync",

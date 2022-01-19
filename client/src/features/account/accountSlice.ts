@@ -15,7 +15,7 @@ const initialState: AccountState = {
 };
 
 export const signInUser = createAsyncThunk<User, FieldValues>(
-  "account/singInUser", // This will only be visible in the redux dev tools
+  "account/signInUser", // This will only be visible in the redux dev tools
   async (data, thunkAPI) => {
     try {
       const userDto = await agent.Account.login(data);

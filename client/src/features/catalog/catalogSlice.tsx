@@ -36,6 +36,8 @@ const getAxiosParams = (productParams: ProductParams) => {
   return params;
 };
 
+// <what we return, parameter we put in, state we are using>
+// Roostate gives us all states. Hover on it to see all available.
 export const fetchProductsAsync = createAsyncThunk<
   Product[],
   void,

@@ -25,12 +25,15 @@ namespace API.Services
         public async Task<string> GenerateToken(User user)
         {
             // The Jwt consists of 3 parts: header, payload, signature
+            // Header is created for us, it just says which algorithm is used
+            // and what type, which is a jwt
+
             // Payload
             var claims = new List<Claim>
-             {
+            {
                  new Claim(ClaimTypes.Email, user.Email),
                  new Claim(ClaimTypes.Name, user.UserName)
-             };
+            };
 
             var roles = await _userManager.GetRolesAsync(user);
             foreach (var role in roles)

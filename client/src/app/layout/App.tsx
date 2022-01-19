@@ -51,11 +51,10 @@ function App() {
       mode: paletteType,
       background: {
         default: paletteType === "light" ? "#eaeaea" : "#121212",
-      }
+      },
     },
   });
 
-  
   const themeChangeHandler = () => {
     setIsDarkMode(!isDarkMode);
   };
@@ -78,15 +77,15 @@ function App() {
             <Route path="/" element={<HomePage />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
-              <Route path="/catalog" element={<Catalog />} />
-              <Route path="/catalog/:id" element={<ProductDetails />} />
-              <Route path="/about" element={<AboutPage />} />
-              <Route path="/contact" element={<ContactPage />} />
-              <Route path="/server-error" element={<ServerError />} />
-              <Route path="/basket" element={<BasketPage />} />
+            <Route path="/catalog" element={<Catalog />} />
+            <Route path="/catalog/:id" element={<ProductDetails />} />
+            <Route path="/about" element={<AboutPage />} />
+            <Route path="/contact" element={<ContactPage />} />
+            <Route path="/server-error" element={<ServerError />} />
+            <Route path="/basket" element={<BasketPage />} />
             <Route element={<RequireAuth />}>
               <Route path="/checkout" element={<CheckoutWrapper />} />
-              <Route path="/orders" element={<OrdersPage />} /> 
+              <Route path="/orders" element={<OrdersPage />} />
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>

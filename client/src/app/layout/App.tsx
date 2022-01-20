@@ -72,7 +72,7 @@ function App() {
           isDarkMode={isDarkMode}
           handleThemeChange={themeChangeHandler}
         />
-        <Container>
+        <Container sx={{ mt: 4 }}>
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/login" element={<Login />} />

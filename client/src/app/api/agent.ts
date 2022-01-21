@@ -50,7 +50,9 @@ axios.interceptors.response.use(
       }
       toast.error(data.title);
     } else if (status === 401) {
-      toast.error(data.title);
+      toast.error(data.title);      
+    } else if (status === 404) {
+      history.push("/not-found");
     } else if (status === 500) {
       history.push("/server-error", { error: data });
     }

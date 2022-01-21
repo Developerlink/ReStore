@@ -37,7 +37,11 @@ namespace API.Extensions
             var typeList = new List<string>();
 
             if (!string.IsNullOrEmpty(brands))
-                brandList.AddRange(brands.ToLower().Split(",").ToList());
+                brandList
+                    .AddRange(brands
+                    .ToLower()
+                    .Split(",")
+                    .ToList());
 
             if (!string.IsNullOrEmpty(types))
                 typeList.AddRange(types.ToLower().Split(",").ToList());
